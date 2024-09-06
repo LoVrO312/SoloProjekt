@@ -613,11 +613,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Lovro\\source\\praksa\\Web API\\Introduction.WebAPI\\Introduction.WebAPI.csproj",
+      "projectUniqueName": "C:\\Users\\Lovro\\source\\praksa\\SoloProjekt\\WebAPI\\Introduction.WebAPI\\Introduction.WebAPI.csproj",
       "projectName": "Introduction.WebAPI",
-      "projectPath": "C:\\Users\\Lovro\\source\\praksa\\Web API\\Introduction.WebAPI\\Introduction.WebAPI.csproj",
+      "projectPath": "C:\\Users\\Lovro\\source\\praksa\\SoloProjekt\\WebAPI\\Introduction.WebAPI\\Introduction.WebAPI.csproj",
       "packagesPath": "C:\\Users\\Lovro\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Lovro\\source\\praksa\\Web API\\Introduction.WebAPI\\obj\\",
+      "outputPath": "C:\\Users\\Lovro\\source\\praksa\\SoloProjekt\\WebAPI\\Introduction.WebAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Lovro\\AppData\\Roaming\\NuGet\\NuGet.Config",
