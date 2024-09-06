@@ -1,0 +1,87 @@
+[
+  {
+    "ContainingType": "Introduction.WebAPI.Controllers.SubjectController",
+    "Method": "CreateSubject",
+    "RelativePath": "Subject/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newSubject",
+        "Type": "Introduction.WebAPI.Subject",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Introduction.WebAPI.Controllers.SubjectController",
+    "Method": "RemoveSubject",
+    "RelativePath": "Subject/Delete/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Introduction.WebAPI.Controllers.SubjectController",
+    "Method": "GetSubjectInfo",
+    "RelativePath": "Subject/Read/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Introduction.WebAPI.Controllers.SubjectController",
+    "Method": "GetAllSubjectInfo",
+    "RelativePath": "Subject/ReadAll",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Introduction.WebAPI.Controllers.SubjectController",
+    "Method": "ChangeSubjectDepartment",
+    "RelativePath": "Subject/Update/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "newDepartmentId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
