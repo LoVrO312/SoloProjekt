@@ -56,6 +56,19 @@ namespace Introduction.WebAPI.Controllers
             return Ok(foundSubjects);
         }
 
+        [HttpGet]
+        [Route("ReadCorrespondingDepartments")]
+        public async Task<IActionResult> GetSubjectDepartmentsAsync()
+        {
+            List<Department>? departments = await _service.GetSubjectDepartmentsAsync();
+
+            if (departments == null)
+            {
+                return BadRequest();
+            }
+            return Ok(departments);
+        }
+
 
         [HttpPut]
         [Route("Update/{id}/{newDepartmentId}")]

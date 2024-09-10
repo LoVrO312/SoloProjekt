@@ -32,6 +32,11 @@ namespace Introduction.Service
             return await _repository.GetAllSubjectInfoAsync();
         }
 
+        public async Task<List<Department>?> GetSubjectDepartmentsAsync()
+        {
+            return await _repository.GetSubjectDepartmentsAsync();
+        }
+
         public async Task<bool> ChangeSubjectDepartmentAsync(Guid id, Guid newDepartmentId)
         {
             return await _repository.ChangeSubjectDepartmentAsync(id, newDepartmentId);

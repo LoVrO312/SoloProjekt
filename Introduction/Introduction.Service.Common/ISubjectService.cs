@@ -7,6 +7,7 @@ namespace Introduction.Service.Common
         Task<bool> CreateSubjectAsync(Subject newSubject);
         Task<Subject?> GetSubjectInfoAsync(Guid id);
         Task<List<Subject>?> GetAllSubjectInfoAsync();
+        Task<List<Department>?> GetSubjectDepartmentsAsync();
         Task<bool> ChangeSubjectDepartmentAsync(Guid id, Guid newDepartmentId);
         Task<bool> RemoveSubjectAsync(Guid id);
     }

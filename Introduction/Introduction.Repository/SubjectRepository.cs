@@ -115,6 +115,50 @@ namespace Introduction.Repository
             }
         }
 
+        public async Task<List<Department>?> GetSubjectDepartmentsAsync()
+        {
+            try
+            {
+                List<Department> departments = new List<Department>();
+
+                using var connection = new NpgsqlConnection(ConnectionString);
+                string commandText = $"SELECT s.name as sname, d.name as dname, d.id as did FROM subject s JOIN department d ON s.departmentid = d.id;";
+                using var command = new NpgsqlCommand(commandText, connection);
+                
+                connection.Open();
+                using NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+                
+                if (reader.HasRows) 
+                {
+                    while (reader.Read())
+                    {
+                        Guid departmentId = Guid.Parse(reader["did"].ToString());
+
+                        Department? department = departments.FirstOrDefault(d => d.Id == departmentId);
+
+                        if (department == null)
+                        {
+                            department = new Department
+                            {
+                                Id = departmentId,
+                                Name = reader["dname"].ToString(),
+                                Subjects = new List<Subject>()
+                            };
+
+                            departments.Add(department);
+                        }
+
+                        department.Subjects.Add(new Subject { Name = reader["sname"].ToString() });
+                    }
+                    return departments;
+                }
+                return null;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
 
         public async Task<bool> ChangeSubjectDepartmentAsync(Guid id, Guid newDepartmentId)
         {

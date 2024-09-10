@@ -2,19 +2,11 @@
 {
     public class Department
     {
-        private static int _IdCounter = 1;
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public int NumberOfStudents { get; set; }
         public string? Name { get; set; }
         public List<Subject> Subjects { get; set; }
-
-        public Department(int numberOfStudents, string name)
-        {
-            Id = _IdCounter++;
-            NumberOfStudents = numberOfStudents;
-            Name = name;
-            Subjects = new List<Subject>();
-        }
+        public Department() { }
 
 
         // create
