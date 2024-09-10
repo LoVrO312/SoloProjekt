@@ -1,5 +1,6 @@
 ﻿using Introduction.Model;
 using Introduction.Service;
+using Introduction.Service.Common;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using System.ComponentModel.DataAnnotations;
@@ -11,15 +12,18 @@ namespace Introduction.WebAPI.Controllers
     [Route("[controller]")]
     public class SubjectController : Controller
     {
-        static string ConnectionString = "Host=localhost;Port=5432;Database=WebAPIUniversity;Username=postgres;Password=postgres";
+        private ISubjectService _service;
+
+        public SubjectController(ISubjectService service)
+        {
+            _service = service;
+        }
 
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> CreateSubjectAsync(Subject newSubject)
         {
-            SubjectService service = new SubjectService();
-
-            if (await service.CreateSubjectAsync(newSubject))
+            if (await _service.CreateSubjectAsync(newSubject))
             {
                 return Ok("Subject added successfully");
             }
@@ -30,8 +34,7 @@ namespace Introduction.WebAPI.Controllers
         [Route("Read/{id}")]
         public async Task<IActionResult> GetSubjectInfoAsync(Guid id)
         {
-            SubjectService service = new SubjectService();
-            Subject? foundSubject = await service.GetSubjectInfoAsync(id);
+            Subject? foundSubject = await _service.GetSubjectInfoAsync(id);
 
             if (foundSubject == null)
             {
@@ -44,8 +47,7 @@ namespace Introduction.WebAPI.Controllers
         [Route("ReadAll")]
         public async Task<IActionResult> GetAllSubjectInfoAsync()
         {
-            SubjectService service = new SubjectService();
-            List<Subject>? foundSubjects = await service.GetAllSubjectInfoAsync();
+            List<Subject>? foundSubjects = await _service.GetAllSubjectInfoAsync();
 
             if (foundSubjects == null)
             {
@@ -56,12 +58,10 @@ namespace Introduction.WebAPI.Controllers
 
 
         [HttpPut]
-        [Route("Update/{id}")]
-        public async Task<IActionResult> ChangeSubjectDepartmentAsync([Required] Guid id, [FromBody] Guid newDepartmentId)
+        [Route("Update/{id}/{newDepartmentId}")]
+        public async Task<IActionResult> ChangeSubjectDepartmentAsync([Required] Guid id, Guid newDepartmentId)
         {
-            SubjectService service = new SubjectService();
-
-            if (await service.ChangeSubjectDepartmentAsync(id, newDepartmentId))
+            if (await _service.ChangeSubjectDepartmentAsync(id, newDepartmentId))
             {
                 return Ok();
             }
@@ -73,9 +73,7 @@ namespace Introduction.WebAPI.Controllers
         [Route("Delete/{id}")]
         public async Task<ActionResult> RemoveSubjectAsync(Guid id)
         {
-            SubjectService service = new SubjectService();
-
-            if (await service.RemoveSubjectAsync(id))
+            if (await _service.RemoveSubjectAsync(id))
             {
                 return Ok();
             }

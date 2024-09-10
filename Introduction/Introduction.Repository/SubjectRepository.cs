@@ -24,10 +24,10 @@ namespace Introduction.Repository
                 command.Parameters.AddWithValue("@timeCreated", NpgsqlTypes.NpgsqlDbType.Timestamp, newSubject.TimeCreated);
 
                 connection.Open();
-                int NumberOfCommits = await command.ExecuteNonQueryAsync(); // number of rows affected
+                int numberOfCommits = await command.ExecuteNonQueryAsync(); // number of rows affected
                 connection.Close();
 
-                if (NumberOfCommits == 0)
+                if (numberOfCommits == 0)
                 {
                     return false;
                 }
@@ -128,10 +128,10 @@ namespace Introduction.Repository
                 command.Parameters.AddWithValue("@id", NpgsqlTypes.NpgsqlDbType.Uuid, id);
 
                 connection.Open();
-                int NumberOfCommits = await command.ExecuteNonQueryAsync();
+                int numberOfCommits = await command.ExecuteNonQueryAsync();
                 connection.Close();
 
-                if (NumberOfCommits == 0)
+                if (numberOfCommits == 0)
                 {
                     return false;
                 }
@@ -153,10 +153,10 @@ namespace Introduction.Repository
                 command.Parameters.AddWithValue("@Id", id);
 
                 connection.Open();
-                int NumberOfCommits = await command.ExecuteNonQueryAsync();
+                int numberOfCommits = await command.ExecuteNonQueryAsync();
                 connection.Close();
 
-                if (NumberOfCommits == 0)
+                if (numberOfCommits == 0)
                 {
                     return false;
                 }
