@@ -1,4 +1,5 @@
-﻿using Introduction.Model;
+﻿using Introduction.Common;
+using Introduction.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Introduction.Repository.Common
     {
         Task<bool> CreateSubjectAsync(Subject newSubject);
         Task<Subject?> GetSubjectInfoAsync(Guid id);
-        Task<List<Subject>?> GetAllSubjectInfoAsync();
+        Task<List<Subject>?> GetAllSubjectFilteredAsync(SubjectFilter filter, Paging paging, Sorting sorting);
         Task<List<Department>?> GetSubjectDepartmentsAsync();
         Task<bool> ChangeSubjectDepartmentAsync(Guid id, Guid newDepartmentId);
         Task<bool> RemoveSubjectAsync(Guid id);

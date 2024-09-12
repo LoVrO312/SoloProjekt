@@ -1,4 +1,5 @@
-﻿using Introduction.Model;
+﻿using Introduction.Common;
+using Introduction.Model;
 using Introduction.Repository;
 using Introduction.Repository.Common;
 using Introduction.Service.Common;
@@ -27,9 +28,9 @@ namespace Introduction.Service
             return await _repository.GetSubjectInfoAsync(id);
         }
 
-        public async Task<List<Subject>?> GetAllSubjectInfoAsync()
+        public async Task<List<Subject>?> GetAllSubjectFilteredAsync(SubjectFilter filter, Paging paging, Sorting sorting)
         {
-            return await _repository.GetAllSubjectInfoAsync();
+            return await _repository.GetAllSubjectFilteredAsync(filter, paging, sorting);
         }
 
         public async Task<List<Department>?> GetSubjectDepartmentsAsync()

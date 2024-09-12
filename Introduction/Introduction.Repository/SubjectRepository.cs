@@ -1,14 +1,24 @@
-﻿using Introduction.Model;
+﻿using Introduction.Common;
+using Introduction.Model;
 using Introduction.Repository.Common;
 using Npgsql;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Security.Principal;
+using System.Text;
 
 namespace Introduction.Repository
 {
     public class SubjectRepository : ISubjectRepository
     {
         static string ConnectionString = "Host=localhost;Port=5432;Database=WebAPIUniversity;Username=postgres;Password=postgres";
-
+        static Dictionary<string, string> MapColumnNames = new Dictionary<string, string>()
+                {
+                    { "Subject name", "s.name" },
+                    { "Department name", "d.name" },
+                    { "Number of ECTS", "s.ectspoints" },
+                    { "Time created", "s.timecreated" }
+                };
         public async Task<bool> CreateSubjectAsync(Subject newSubject)
         {
             try
@@ -75,31 +85,98 @@ namespace Introduction.Repository
             }
         }
 
-        public async Task<List<Subject>?> GetAllSubjectInfoAsync()
+        public async Task<List<Subject>?> GetAllSubjectFilteredAsync(SubjectFilter filter, Paging paging, Sorting sorting)
         {
             try
             {
                 List<Subject> subjects = new List<Subject>();
 
+                var commandText = new StringBuilder("SELECT s.id as sid, s.name as sname, s.ectspoints as sectspoints, s.timecreated as stimecreated, d.id as did, d.name as dname FROM subject s JOIN department d ON s.departmentid = d.id WHERE 1=1");
+
+                if (!String.IsNullOrEmpty(filter.SearchQuery))
+                {
+                    commandText.Append($" AND (s.name LIKE '%' || @searchQuery || '%' OR d.name LIKE '%' || @searchQuery || '%')");
+                }
+                if (filter.DepartmentId != null)
+                {
+                    commandText.Append($" AND d.id = @departmentId");
+                }
+                if (filter.MinEctsPoints != null)
+                {
+                    commandText.Append($" AND s.ectspoints >= @minEctsPoints");
+                }
+                if (filter.MaxEctsPoints != null)
+                {
+                    commandText.Append($" AND s.ectspoints <= @maxEctsPoints");
+                }
+                if (filter.FromTimeCreated != null)
+                {
+                    commandText.Append($" AND s.timecreated >= @fromTimeCreated");
+                }
+                if (filter.ToTimeCreated != null)
+                {
+                    commandText.Append($" AND s.timecreated <= @toTimeCreated");
+                }
+
+                // prevention of injection attacks and constraint checks
+                string sortBy = MapColumnNames.ContainsKey(sorting.SortBy) ? MapColumnNames[sorting.SortBy] : "s.name";
+                string sortOrder = sorting.SortOrder == "Descending" ? "DESC" : "ASC";
+                int pageNumber = paging.PageNumber < 1 ? 1 : paging.PageNumber;
+                int recordsPerPage = (paging.RecordsPerPage < 1 || paging.RecordsPerPage > 15) ? 15 : paging.RecordsPerPage;
+
+                commandText.Append($" ORDER BY {sortBy} {sortOrder}");
+                commandText.Append($" OFFSET @offset LIMIT @recordsPerPage;");
+
                 using var connection = new NpgsqlConnection(ConnectionString);
-                string commandText = $"SELECT * FROM subject";
-                using var command = new NpgsqlCommand(commandText, connection);
+                using var command = new NpgsqlCommand(commandText.ToString(), connection);
+
+                if (!String.IsNullOrEmpty(filter.SearchQuery))
+                {
+                    command.Parameters.AddWithValue("@searchQuery", filter.SearchQuery);
+                }
+                if (filter.DepartmentId != null)
+                {
+                    command.Parameters.AddWithValue("@departmentId", NpgsqlTypes.NpgsqlDbType.Uuid, filter.DepartmentId);
+                }
+                if (filter.MinEctsPoints != null)
+                {
+                    command.Parameters.AddWithValue("@minEctsPoints", filter.MinEctsPoints);
+                }
+                if (filter.MaxEctsPoints != null)
+                {
+                    command.Parameters.AddWithValue("@maxEctsPoints", filter.MaxEctsPoints);
+                }
+                if (filter.FromTimeCreated != null)
+                {
+                    command.Parameters.AddWithValue("@fromTimeCreated", NpgsqlTypes.NpgsqlDbType.Timestamp, filter.FromTimeCreated);
+                }
+                if (filter.ToTimeCreated != null)
+                {
+                    command.Parameters.AddWithValue("@toTimeCreated", NpgsqlTypes.NpgsqlDbType.Timestamp, filter.ToTimeCreated);
+                }
+                command.Parameters.AddWithValue("@offset", (pageNumber - 1) * recordsPerPage);
+                command.Parameters.AddWithValue("@recordsPerPage", recordsPerPage);
 
                 connection.Open();
                 using NpgsqlDataReader reader = await command.ExecuteReaderAsync();
 
+                // parsing the response from the database
                 if (reader.HasRows)
                 {
                     while (reader.Read())
                     {
-                        var subject = new Subject
+                        Subject subject = new Subject
                         {
-                            Id = Guid.Parse(reader[0].ToString()),
-                            DepartmentId = Guid.Parse(reader[1].ToString()),
-                            Name = reader["name"].ToString(),
-                            TimeCreated = DateTime.Parse(reader["timecreated"].ToString())
+                            Id = Guid.Parse(reader["sid"].ToString()),
+                            Name = reader["sname"].ToString(),
+                            TimeCreated = DateTime.Parse(reader["stimecreated"].ToString()),
+                            EctsPoints = Convert.ToInt32(reader["sectspoints"]),
+                            Department = new Department
+                            {
+                                Id = Guid.Parse(reader["did"].ToString()),
+                                Name = reader["dname"].ToString()
+                            }
                         };
-
                         subjects.Add(subject);
                     }
                     return subjects;
@@ -154,7 +231,7 @@ namespace Introduction.Repository
                 }
                 return null;
             }
-            catch(Exception ex)
+            catch
             {
                 return null;
             }

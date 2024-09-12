@@ -1,10 +1,12 @@
 ﻿using Introduction.Model;
 using Introduction.Service;
 using Introduction.Service.Common;
+using Introduction.Common;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata.Ecma335;
+using System.Xml.XPath;
 
 namespace Introduction.WebAPI.Controllers
 {
@@ -44,16 +46,38 @@ namespace Introduction.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("ReadAll")]
-        public async Task<IActionResult> GetAllSubjectInfoAsync()
+        [Route("ReadAllFiltered")]
+        public async Task<IActionResult> GetAllSubjectFilteredAsync(
+            Guid? departmentId, int? minEctsPoints, int? maxEctsPoints, DateTime? fromTimeCreated,
+            DateTime? toTimeCreated, int recordsPerPage = 15, int pageNumber = 1, string sortBy = "Subject Name", string sortOrder = "Descending", string searchQuery = "")
         {
-            List<Subject>? foundSubjects = await _service.GetAllSubjectInfoAsync();
+        SubjectFilter filter = new SubjectFilter
+                    {
+                        SearchQuery = searchQuery,
+                        DepartmentId = departmentId,
+                        MinEctsPoints = minEctsPoints,
+                        MaxEctsPoints = maxEctsPoints,
+                        FromTimeCreated = fromTimeCreated,
+                        ToTimeCreated = toTimeCreated
+                    };
+        Paging paging = new Paging
+                    {
+                        RecordsPerPage = recordsPerPage,
+                        PageNumber = pageNumber
+                    };
+        Sorting sorting = new Sorting
+                    {
+                        SortBy = sortBy,
+                        SortOrder = sortOrder
+                    };
 
-            if (foundSubjects == null)
-            {
-                return BadRequest();
-            }
-            return Ok(foundSubjects);
+        List<Subject>? foundSubjects = await _service.GetAllSubjectFilteredAsync(filter, paging, sorting);
+
+        if (foundSubjects == null)
+        {
+            return BadRequest("No results");
+        }
+        return Ok(foundSubjects);
         }
 
         [HttpGet]
