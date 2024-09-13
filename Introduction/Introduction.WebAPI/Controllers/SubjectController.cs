@@ -7,6 +7,8 @@ using Npgsql;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata.Ecma335;
 using System.Xml.XPath;
+using Introduction.WebAPI.Rest;
+using Microsoft.AspNetCore.Identity;
 
 namespace Introduction.WebAPI.Controllers
 {
@@ -85,12 +87,19 @@ namespace Introduction.WebAPI.Controllers
         public async Task<IActionResult> GetSubjectDepartmentsAsync()
         {
             List<Department>? departments = await _service.GetSubjectDepartmentsAsync();
-
             if (departments == null)
             {
                 return BadRequest();
             }
-            return Ok(departments);
+
+            List<DepartmentRest> departmentsRest = departments.Select(dpt => new DepartmentRest
+                    {
+                        Id = dpt.Id,
+                        Name = dpt.Name,
+                        Subjects = dpt.Subjects
+                    }).ToList();
+
+            return Ok(departmentsRest);
         }
 
 
