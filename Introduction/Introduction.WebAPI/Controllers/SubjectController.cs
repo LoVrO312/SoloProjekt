@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 namespace Introduction.WebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("subject")]
     public class SubjectController : Controller
     {
         private ISubjectService _service;
@@ -24,7 +24,7 @@ namespace Introduction.WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("Create")]
+        [Route("create")]
         public async Task<IActionResult> CreateSubjectAsync(Subject newSubject)
         {
             if (await _service.CreateSubjectAsync(newSubject))
@@ -35,7 +35,7 @@ namespace Introduction.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("Read/{id}")]
+        [Route("read/{id}")]
         public async Task<IActionResult> GetSubjectInfoAsync(Guid id)
         {
             Subject? foundSubject = await _service.GetSubjectInfoAsync(id);
@@ -48,7 +48,7 @@ namespace Introduction.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("ReadAllFiltered")]
+        [Route("readallfiltered")]
         public async Task<IActionResult> GetAllSubjectFilteredAsync(
             Guid? departmentId, int? minEctsPoints, int? maxEctsPoints, DateTime? fromTimeCreated,
             DateTime? toTimeCreated, int recordsPerPage = 15, int pageNumber = 1, string sortBy = "Subject Name", string sortOrder = "Descending", string searchQuery = "")
@@ -83,7 +83,7 @@ namespace Introduction.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("ReadCorrespondingDepartments")]
+        [Route("readcorrespondingdepartments")]
         public async Task<IActionResult> GetSubjectDepartmentsAsync()
         {
             List<Department>? departments = await _service.GetSubjectDepartmentsAsync();
@@ -104,7 +104,7 @@ namespace Introduction.WebAPI.Controllers
 
 
         [HttpPut]
-        [Route("Update/{id}/{newDepartmentId}")]
+        [Route("update/{id}/{newDepartmentId}")]
         public async Task<IActionResult> ChangeSubjectDepartmentAsync([Required] Guid id, Guid newDepartmentId)
         {
             if (await _service.ChangeSubjectDepartmentAsync(id, newDepartmentId))
@@ -116,7 +116,7 @@ namespace Introduction.WebAPI.Controllers
 
 
         [HttpDelete]
-        [Route("Delete/{id}")]
+        [Route("delete/{id}")]
         public async Task<ActionResult> RemoveSubjectAsync(Guid id)
         {
             if (await _service.RemoveSubjectAsync(id))
