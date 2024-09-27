@@ -25,8 +25,16 @@ namespace Introduction.WebAPI.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateSubjectAsync(Subject newSubject)
+        public async Task<IActionResult> CreateSubjectAsync(CreateSubjectRest subject)
         {
+            Subject newSubject = new Subject
+            {
+                DepartmentId = subject.DepartmentId,
+                EctsPoints = subject.EctsPoints,
+                Name = subject.Name,
+                TimeCreated = subject.TimeCreated
+            };
+
             if (await _service.CreateSubjectAsync(newSubject))
             {
                 return Ok("Subject added successfully");

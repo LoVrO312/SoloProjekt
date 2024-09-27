@@ -24,12 +24,13 @@ namespace Introduction.Repository
             try
             {
                 using var connection = new NpgsqlConnection(ConnectionString);
-                string commandText = $"INSERT INTO subject VALUES(@id,@departmentId,@name,@timeCreated);";
+                string commandText = $"INSERT INTO subject (id, departmentid, name, ectspoints, timecreated) VALUES(@id,@departmentId,@name,@ectsPoints,@timeCreated);";
                 using var command = new NpgsqlCommand(commandText, connection);
 
                 command.Parameters.AddWithValue("@id", NpgsqlTypes.NpgsqlDbType.Uuid, newSubject.Id);
                 command.Parameters.AddWithValue("@departmentId", NpgsqlTypes.NpgsqlDbType.Uuid, newSubject.DepartmentId);
                 command.Parameters.AddWithValue("@name", newSubject.Name);
+                command.Parameters.AddWithValue("@ectsPoints", newSubject.EctsPoints);
                 // incorrect syntax : 2024-09-09T09:01:32.293Z", correct syntax : 2024-09-09T09:01:32"
                 command.Parameters.AddWithValue("@timeCreated", NpgsqlTypes.NpgsqlDbType.Timestamp, newSubject.TimeCreated);
 
@@ -95,7 +96,7 @@ namespace Introduction.Repository
 
                 if (!String.IsNullOrEmpty(filter.SearchQuery))
                 {
-                    commandText.Append($" AND (s.name LIKE '%' || @searchQuery || '%' OR d.name LIKE '%' || @searchQuery || '%')");
+                    commandText.Append($" AND (s.name ILIKE '%' || @searchQuery || '%' OR d.name ILIKE '%' || @searchQuery || '%')");
                 }
                 if (filter.DepartmentId != null)
                 {
@@ -161,13 +162,12 @@ namespace Introduction.Repository
                 using NpgsqlDataReader reader = await command.ExecuteReaderAsync();
 
                 // parsing the response from the database
-                if (reader.HasRows)
-                {
                     while (reader.Read())
                     {
                         Subject subject = new Subject
                         {
                             Id = Guid.Parse(reader["sid"].ToString()),
+                            DepartmentId = Guid.Parse(reader["did"].ToString()),
                             Name = reader["sname"].ToString(),
                             TimeCreated = DateTime.Parse(reader["stimecreated"].ToString()),
                             EctsPoints = Convert.ToInt32(reader["sectspoints"]),
@@ -179,12 +179,7 @@ namespace Introduction.Repository
                         };
                         subjects.Add(subject);
                     }
-                    return subjects;
-                }
-                else
-                {
-                    return null;
-                }
+               return subjects;
             }
             catch
             {

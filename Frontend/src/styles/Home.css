@@ -1,0 +1,20 @@
+
+  .subject-department-table {
+    flex: 1;                    
+    border-collapse: collapse;  
+  }
+  
+  .subject-department-table th, 
+  .subject-department-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .subject-department-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .subject-department-table tr:hover {
+    background-color: #f1f1f1;
+  }

@@ -3,14 +3,6 @@ import React from 'react';
 function SubmitForm({ subject, handleInputChange, handleSubmit }){
     return (
     <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="id"
-          placeholder="Id"
-          value={subject.id}
-          onChange={handleInputChange}
-          required
-        />
         <br/>
         <input
           type="text"
@@ -23,15 +15,15 @@ function SubmitForm({ subject, handleInputChange, handleSubmit }){
         <br/>
         <input
           type="number"
-          name="ects"
+          name="ectsPoints"
           placeholder="ects points"
-          value={subject.ects}
+          value={subject.ectsPoints}
           onChange={handleInputChange}
           required
         />
         <br/>
         <input
-          type="number"
+          type="text"
           name="departmentId"
           placeholder="department id"
           value={subject.departmentId}
